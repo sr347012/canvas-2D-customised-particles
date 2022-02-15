@@ -33,10 +33,10 @@ class Particle {
     constructor() {
         this.x = mouse.x;
         this.y = mouse.y;
-        this.size = Math.random() * 5;
+        this.size = Math.random() * 15;
         this.speedX = Math.random() * 3 - 1.5;
         this.speedY = Math.random() * 3 - 1.5;
-        this.radius = 10;
+        this.radius = 2;
         this.color = 'hsl(' + hue + ',100%,50%)';
     }
 
@@ -83,11 +83,12 @@ function animate() {
     
                 if(dist >5 && dist < 100) { 
                     ctx.strokeStyle='firebrick';
-                    ctx.lineWidth = 8;
+                    // ctx.lineWidth = 8;
                     ctx.beginPath();
                     ctx.moveTo(particlesArray[i].x,particlesArray[i].y);
                     ctx.lineTo(particlesArray[j].x,particlesArray[j].y); 
                     ctx.stroke();   
+                    ctx.lineWidth = 0.1;
                 }
     
                 if(particlesArray[i].size <=4) {
