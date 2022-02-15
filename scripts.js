@@ -6,13 +6,17 @@ const ctx = canvas.getContext('2d');
  canvas.width = window.innerWidth;
  canvas.height = window.innerHeight;
 console.log(ctx);
+var color = 0x000000;
+
+var rgb_r, rgb_b, rgb_g ;
 
 //Default values
-var numberOfParticles = 10;
+var numberOfParticles = 50;
 var backgroundOpacity = 0.07;
-var customSpeed = 0;
-var customRadius = 0;
+var customSpeed = 0.01;
+var customRadius = 0.01;
 var customOpacity = 1;
+var boxColor = color;
 
 
 var controller = new function() {
@@ -21,6 +25,7 @@ var controller = new function() {
     this.speed = 0.001;
     this.radius = 0.01;
     this.magic = 1;
+    this.boxColor = color;
   }();
 
 //GUI Values
@@ -29,18 +34,26 @@ const gui = new dat.GUI();
 gui.add( controller, 'opacity', 0.01, 1 ).onChange( function() {
     backgroundOpacity = (controller.opacity);
 } );
-gui.add( controller, 'particles', 10, 100 ).onChange( function() {
-    numberOfParticles = (controller.particles);
-} );
-gui.add( controller, 'speed', 0.001, 30 ).onChange( function() {
-    customSpeed = (controller.speed);
-} );
-gui.add( controller, 'radius', 0.01, 100 ).onChange( function() {
-    customRadius = (controller.radius);
-} );
+// gui.add( controller, 'particles', 10, 100 ).onChange( function() {
+//     numberOfParticles = (controller.particles);
+// } );
+// gui.add( controller, 'speed', 0.001, 30 ).onChange( function() {
+//     customSpeed = (controller.speed);
+// } );
+// gui.add( controller, 'radius', 0.01, 100 ).onChange( function() {
+//     customRadius = (controller.radius);
+// } );
 gui.add( controller, 'magic', 0.01, 1 ).onChange( function() {
-    customOpacity = (controller.magic);
+    ctx.globalAlpha = (controller.magic);
 } );
+gui.addColor( controller, 'boxColor', color ).onChange( function() {
+    // console.log( (controller.boxColor) );
+    rgb_b = controller.boxColor % 256;
+    let g_0 = (controller.boxColor % 65536 - rgb_b);
+    let r_0 = controller.boxColor - g_0 - rgb_b;
+    rgb_g = g_0 / 256
+    rgb_r = r_0 / 65536;
+  });
 
 
 
@@ -88,7 +101,7 @@ for (let i = 0; i < numberOfParticles; i++) {
 
 function animate() {
     // For clearing the canvas and effects
-    ctx.fillStyle='rgba(178,34,34,'+ backgroundOpacity +')';
+    ctx.fillStyle='rgba('+rgb_r+','+ rgb_g +','+ rgb_b +',' + backgroundOpacity +')';
     ctx.fillRect(0,0,canvas.width, canvas.height);
 
     for (let i = 0; i < particlesArray.length; i++) {
