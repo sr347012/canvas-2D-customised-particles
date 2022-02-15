@@ -1,5 +1,6 @@
 canvas = document.querySelector('canvas');
 ctx = canvas.getContext('2d');
+let hue = 0;
 
 window.addEventListener('resize', function () {
     init();
@@ -32,10 +33,11 @@ class Particle {
     constructor() {
         this.x = mouse.x;
         this.y = mouse.y;
-        this.size = Math.random() * 25;
+        this.size = Math.random() * 5;
         this.speedX = Math.random() * 3 - 1.5;
         this.speedY = Math.random() * 3 - 1.5;
         this.radius = 10;
+        this.color = 'hsl(' + hue + ',100%,50%)';
     }
 
     update() {
@@ -52,12 +54,12 @@ class Particle {
     }
 
     draw() {
-        // ctx.fillStyle = 'firebrick';
+        ctx.fillStyle = 'hsl(' + hue + ',100%, 50%)';
         ctx.strokeStyle = 'white';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0 , Math.PI * 2);
         ctx.stroke();
-        // ctx.fill();
+        ctx.fill();
     }
 }
 //========================================================================================
@@ -71,29 +73,39 @@ function animate() {
         particlesArray[i].update();
         particlesArray[i].draw();
 
-        if(particlesArray[i].size <=4) {
-            particlesArray.splice(i,1);
-            i--;
+      
+        for (let j = i; j < particlesArray.length; j++) {
+            // console.log(particlesArray[i], particlesArray[j]);
+            if (particlesArray[i] !== undefined) {
+                const dx = particlesArray[i].x - particlesArray[j].x;
+                const dy = particlesArray[i].y - particlesArray[j].y;
+                const dist = Math.sqrt((dx * dx) + (dy * dy));
+    
+                if(dist >5 && dist < 100) { 
+                    ctx.strokeStyle='firebrick';
+                    ctx.lineWidth = 8;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[i].x,particlesArray[i].y);
+                    ctx.lineTo(particlesArray[j].x,particlesArray[j].y); 
+                    ctx.stroke();   
+                }
+    
+                if(particlesArray[i].size <=4) {
+                    particlesArray.splice(i,1);
+                    i--;
+                }
+            }
+
         }
-        // for (let j = 0; j < particlesArray.length; j++) {
-        //     const dx = particlesArray[j].x - particlesArray[i].x;
-        //     const dy = particlesArray[j].y - particlesArray[i].y;
-        //     const dist = Math.sqrt(dx * dx - dy * dy);
-
-        //     ctx.strokeStyle='white';
-        //     ctx.beginPath();
-        //     ctx.moveTo(particlesArray[i].x,particlesArray[i].y);
-        //     ctx.lineTo(particlesArray[j].x,particlesArray[j].y);
-        // }
     }
-
+    hue = hue + 1;
 
     requestAnimationFrame(animate);
 
 }
 //=======================================================================================
 function handleParticles() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         particlesArray.push(new Particle());
     }
     // console.log(particlesArray);
